@@ -23,18 +23,23 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
 
+app.use(session({
+  secret: 'hello',
+  resave: false,
+  saveUninitialized: true
+}));
 
-app.get('/', 
+app.get('/', util.checkUser,
 function(req, res) {
   res.render('index');
 });
 
-app.get('/create', 
+app.get('/create', util.checkUser,
 function(req, res) {
   res.render('index');
 });
 
-app.get('/links', 
+app.get('/links', util.checkUser,
 function(req, res) {
   Links.reset().fetch().then(function(links) {
     res.status(200).send(links.models);
@@ -98,7 +103,6 @@ function(req, res) {
       });
     } else {
       res.redirect('signup');
-      // todo: add 'user already exists' <p>
       console.log('User already exists. Try again.');
     }
   });
