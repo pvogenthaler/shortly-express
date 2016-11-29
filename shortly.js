@@ -88,7 +88,6 @@ app.get('/signup', function(req, res) {
 
 app.post('/signup', 
 function(req, res) {
-  console.log('req', req);
   var username = req.body.username;
   var password = req.body.password;
 
@@ -99,7 +98,9 @@ function(req, res) {
         password: password
       });
       newUser.save().then(function() {
-        res.redirect('/');
+        // create new session for new user
+        util.startSession(req, res, username);
+        // res.redirect('index');
       });
     } else {
       res.redirect('signup');
@@ -118,15 +119,23 @@ function(req, res) {
   var password = req.body.password;
 
   new User({username: username}).fetch().then(function(user) {
-    user.comparePassword(password, function(found) { 
-      if (found) {
-        res.redirect('index');
-      } else {
-        res.redirect('login');
-        console.log('Incorrect password. Please try again.');
-      }
-    });
+    if (user === null) {
+      res.redirect('/login');
+    } else {
+      user.comparePassword(password, function(found) { 
+        if (found) {
+          // create new session for user that just logged in
+          util.startSession(req, res, username);
+          // res.redirect('index');
+        }
+      });
+    }
   });
+});
+
+app.get('/logout', function(req, res) {
+  util.endSession(req, res);
+  // res.redirect('login');
 });
 
 /************************************************************/

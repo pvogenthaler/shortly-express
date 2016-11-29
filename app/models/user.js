@@ -9,20 +9,21 @@ var User = db.Model.extend({
   hasTimestamps: true,
 
   initialize: function() {
-    console.log('this', this);
     this.on('creating', this.hashPassword);
   },
 
   comparePassword: function(password, cb) {
     bcrypt.compare(password, this.get('password'), (err, res) => {
-      if (err) { console.log('passwords do not match'); }
+      if (err) { 
+        console.log('passwords do not match'); 
+        res.redirect('login');
+      }
       cb(res);
     });
   },
 
   hashPassword: function() {
     var hashedPassword = Promise.promisify(bcrypt.hash);
-    console.log('getting password', this, this.get('password'));
     return hashedPassword(this.get('password'), null, null)
       .then( this.updatePassword.bind(this) );
   },
