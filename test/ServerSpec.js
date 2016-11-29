@@ -13,7 +13,9 @@ var Link = require('../app/models/link');
 // Remove the 'x' from beforeEach block when working on
 // authentication tests.
 /************************************************************/
-var xbeforeEach = function() {};
+var beforeEach = function(callback) {
+  callback();
+};
 /************************************************************/
 
 

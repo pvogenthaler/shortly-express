@@ -10,6 +10,7 @@ var User = require('./app/models/user');
 var Links = require('./app/collections/links');
 var Link = require('./app/models/link');
 var Click = require('./app/models/click');
+var session = require('express-session');
 
 var app = express();
 
@@ -76,7 +77,53 @@ function(req, res) {
 // Write your authentication routes here
 /************************************************************/
 
+app.get('/signup', function(req, res) {
+  res.render('signup');
+});
 
+app.post('/signup', 
+function(req, res) {
+  console.log('req', req);
+  var username = req.body.username;
+  var password = req.body.password;
+
+  new User({username: username}).fetch().then(function(user) {
+    if (!user) {
+      var newUser = new User({
+        username: username,
+        password: password
+      });
+      newUser.save().then(function() {
+        res.redirect('/');
+      });
+    } else {
+      res.redirect('signup');
+      // todo: add 'user already exists' <p>
+      console.log('User already exists. Try again.');
+    }
+  });
+});
+
+app.get('/login', function(req, res) {
+  res.render('login');
+});
+
+app.post('/login', 
+function(req, res) {
+  var username = req.body.username;
+  var password = req.body.password;
+
+  new User({username: username}).fetch().then(function(user) {
+    user.comparePassword(password, function(found) { 
+      if (found) {
+        res.redirect('index');
+      } else {
+        res.redirect('login');
+        console.log('Incorrect password. Please try again.');
+      }
+    });
+  });
+});
 
 /************************************************************/
 // Handle the wildcard route last - if all other routes fail
