@@ -41,21 +41,27 @@ function(req, res) {
 
 app.get('/links', util.checkUser,
 function(req, res) {
-  Links.reset().fetch().then(function(links) {
-    res.status(200).send(links.models);
+  var username = req.session.username;
+  Links.reset().fetch().then(function(links) {    
+    var filteredLinks = links.models.filter(function(link) {
+      return link.attributes.username === username;
+    });
+    // res.status(200).send(links.models);
+    res.status(200).send(filteredLinks);
   });
 });
 
 app.post('/links', 
 function(req, res) {
   var uri = req.body.url;
+  var username = req.session.username;
 
   if (!util.isValidUrl(uri)) {
     console.log('Not a valid url: ', uri);
     return res.sendStatus(404);
   }
 
-  new Link({ url: uri }).fetch().then(function(found) {
+  new Link({ url: uri, username: username }).fetch().then(function(found) {
     if (found) {
       res.status(200).send(found.attributes);
     } else {
@@ -67,6 +73,7 @@ function(req, res) {
 
         Links.create({
           url: uri,
+          username: username,
           title: title,
           baseUrl: req.headers.origin
         })

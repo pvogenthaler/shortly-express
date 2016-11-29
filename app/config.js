@@ -12,6 +12,7 @@ db.knex.schema.hasTable('urls').then(function(exists) {
   if (!exists) {
     db.knex.schema.createTable('urls', function (link) {
       link.increments('id').primary();
+      link.string('username', 100);
       link.string('url', 255);
       link.string('baseUrl', 255);
       link.string('code', 100);
@@ -43,6 +44,18 @@ db.knex.schema.hasTable('users').then(function(exists) {
       user.string('username', 100);
       user.string('password', 100);
       user.timestamps();
+    }).then(function (table) {
+      console.log('Created Table', table);
+    });
+  }
+});
+
+db.knex.schema.hasTable('userLinks').then(function(exists) {
+  if (!exists) {
+    db.knex.schema.createTable('userLinks', function (userLink) {
+      userLink.increments('id').primary();
+      userLink.string('username', 100);
+      userLink.string('url', 255);
     }).then(function (table) {
       console.log('Created Table', table);
     });
