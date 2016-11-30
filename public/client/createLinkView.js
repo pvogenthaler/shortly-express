@@ -37,6 +37,13 @@ Shortly.createLinkView = Backbone.View.extend({
     return this;
   },
 
+  incorrectPassword: function(model, res) {
+    this.$el.find('.message')
+      .html('Incorrect password')
+      .addClass('error');
+    return this;
+  },
+
   startSpinner: function() {
     this.$el.find('img').show();
     this.$el.find('form input[type=submit]').attr('disabled', 'true');

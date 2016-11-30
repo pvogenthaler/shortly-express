@@ -41,21 +41,9 @@ db.knex.schema.hasTable('users').then(function(exists) {
   if (!exists) {
     db.knex.schema.createTable('users', function (user) {
       user.increments('id').primary();
-      user.string('username', 100);
+      user.string('username', 100).unique();
       user.string('password', 100);
       user.timestamps();
-    }).then(function (table) {
-      console.log('Created Table', table);
-    });
-  }
-});
-
-db.knex.schema.hasTable('userLinks').then(function(exists) {
-  if (!exists) {
-    db.knex.schema.createTable('userLinks', function (userLink) {
-      userLink.increments('id').primary();
-      userLink.string('username', 100);
-      userLink.string('url', 255);
     }).then(function (table) {
       console.log('Created Table', table);
     });

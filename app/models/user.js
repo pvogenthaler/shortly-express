@@ -1,7 +1,7 @@
 var db = require('../config');
 var bcrypt = require('bcrypt-nodejs');
 var Promise = require('bluebird');
-
+var Handlebars = require('handlebars');
 
 
 var User = db.Model.extend({
@@ -16,7 +16,7 @@ var User = db.Model.extend({
     bcrypt.compare(password, this.get('password'), (err, res) => {
       if (err) { 
         console.log('passwords do not match'); 
-        res.redirect('login');
+        // res.redirect('login');
       }
       cb(res);
     });
